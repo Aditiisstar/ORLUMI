@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orlumi — Illuminate Your Natural Glow</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2;
+    --blush: #F2E8E0;
+    --rose: #D4A5A0;
+    --deep-rose: #B07B74;
+    --terracotta: #C4886A;
+    --dark: #2A1F1A;
+    --text: #4A3530;
+    --muted: #9A7E78;
+    --white: #FFFFFF;
+    --border: rgba(180,140,130,0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--cream);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* ── LOADER ── */
+  #loader {
+    position: fixed; inset: 0;
+    background: var(--cream);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.6s ease, visibility 0.6s;
+  }
+  #loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+  .loader-inner { text-align: center; }
+  .loader-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.5rem; font-weight: 300;
+    letter-spacing: 0.4em; color: var(--dark);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  .loader-line {
+    width: 0; height: 1px; background: var(--terracotta);
+    margin: 1rem auto 0; animation: lineGrow 1.2s ease forwards 0.3s;
+  }
+  @keyframes lineGrow { to { width: 120px; } }
+  @keyframes pulse { 0%,100%{opacity:0.25} 50%{opacity:1} }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.4rem 5rem;
+    background: rgba(250,247,242,0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    transition: padding 0.4s ease, box-shadow 0.4s;
+  }
+  nav.scrolled { padding: 0.8rem 5rem; box-shadow: 0 2px 30px rgba(42,31,26,0.06); }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.85rem; font-weight: 400;
+    letter-spacing: 0.18em; color: var(--dark);
+    text-decoration: none; cursor: pointer;
+  }
+  .nav-links { display: flex; gap: 2.8rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--text); text-decoration: none;
+    font-weight: 400; position: relative; transition: color 0.2s;
+  }
+  .nav-links a::after {
+    content:''; position:absolute; bottom:-5px; left:0; right:100%;
+    height:1px; background:var(--terracotta); transition: right 0.35s ease;
+  }
+  .nav-links a:hover::after { right: 0; }
+  .nav-links a:hover { color: var(--terracotta); }
+  .nav-right { display: flex; align-items: center; gap: 1.5rem; }
+  .cart-btn {
+    position: relative; cursor: pointer;
+    background: none; border: none;
+    font-size: 1.15rem; color: var(--dark); transition: color 0.2s; line-height: 1;
+  }
+  .cart-btn:hover { color: var(--terracotta); }
+  .cart-count {
+    position: absolute; top: -7px; right: -9px;
+    background: var(--terracotta); color: white;
+    font-size: 0.55rem; width: 16px; height: 16px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-weight: 500;
+  }
+
+  /* ── HERO ── */
+  #home {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    padding-top: 80px;
+  }
+  .hero-text {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 6rem 4rem 6rem 6rem;
+    animation: fadeUp 0.9s ease both 0.5s;
+  }
+  .hero-tag {
+    font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--terracotta); margin-bottom: 1.8rem;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .hero-tag::before { content:''; width:36px; height:1px; background:var(--terracotta); }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.8rem, 5vw, 4.6rem);
+    font-weight: 300; line-height: 1.12;
+    color: var(--dark); margin-bottom: 1.8rem;
+  }
+  .hero-title em { font-style: italic; color: var(--deep-rose); }
+  .hero-sub {
+    font-size: 0.92rem; line-height: 1.9;
+    color: var(--muted); max-width: 400px; margin-bottom: 2.8rem;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 0.8rem;
+    background: var(--dark); color: var(--cream);
+    padding: 1.05rem 2.4rem;
+    font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase;
+    border: none; cursor: pointer;
+    transition: background 0.3s, gap 0.3s, letter-spacing 0.3s;
+    font-family: 'DM Sans', sans-serif; font-weight: 400;
+    text-decoration: none;
+  }
+  .btn-primary:hover { background: var(--terracotta); gap: 1.4rem; }
+  .btn-primary span { font-size: 1rem; transition: transform 0.3s; }
+  .btn-primary:hover span { transform: translateX(4px); }
+  .btn-outline {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    background: transparent; color: var(--dark);
+    padding: 1rem 2.1rem;
+    font-size: 0.72rem; letter-spacing: 0.13em; text-transform: uppercase;
+    border: 1px solid rgba(42,31,26,0.4); cursor: pointer; transition: all 0.3s;
+    font-family: 'DM Sans', sans-serif; font-weight: 400;
+  }
+  .btn-outline:hover { background: var(--dark); color: var(--cream); border-color: var(--dark); }
+
+  .hero-image {
+    position: relative; overflow: hidden; background: var(--blush);
+  }
+  .hero-image-inner {
+    position: absolute; inset: 0;
+    background: linear-gradient(150deg, #F5EDE6 0%, #EDD8CE 45%, #D9BEB6 100%);
+  }
+  .hero-visual {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hero-circle {
+    width: 340px; height: 340px; border-radius: 50%;
+    background: radial-gradient(circle at 32% 30%, #fff9f7, #e8c5bc);
+    box-shadow: 0 40px 100px rgba(180,100,80,0.22), inset 0 -2px 40px rgba(255,255,255,0.6);
+    animation: float 6s ease-in-out infinite;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem; font-style: italic; color: var(--deep-rose);
+    text-align: center; padding: 2.5rem; line-height: 1.7;
+  }
+  @keyframes float { 0%,100%{transform:translateY(0) rotate(-1deg)} 50%{transform:translateY(-22px) rotate(1deg)} }
+  .hero-badge {
+    position: absolute; bottom: 3.5rem; left: 3.5rem;
+    background: white; padding: 1.1rem 1.6rem;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    animation: fadeUp 0.9s ease both 1s;
+    border-left: 3px solid var(--terracotta);
+  }
+  .hero-badge p { font-size: 0.65rem; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; }
+  .hero-badge strong { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; color: var(--dark); display: block; line-height: 1.2; }
+  .hero-accent {
+    position: absolute; top: 3rem; right: 2rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--deep-rose); writing-mode: vertical-rl; opacity: 0.5;
+  }
+
+  /* ── MARQUEE ── */
+  .marquee-wrap {
+    background: var(--dark); padding: 1.1rem 0; overflow: hidden; white-space: nowrap;
+  }
+  .marquee-track {
+    display: inline-flex; gap: 3.5rem;
+    animation: marquee 22s linear infinite;
+  }
+  .marquee-track span {
+    font-size: 0.65rem; letter-spacing: 0.22em;
+    text-transform: uppercase; color: rgba(250,247,242,0.55); font-weight: 300;
+  }
+  .marquee-track .dot { color: var(--terracotta); }
+  @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  /* ── SECTIONS ── */
+  section { padding: 8rem 6rem; }
+  .section-tag {
+    font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--terracotta); margin-bottom: 1rem;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
+    font-weight: 300; color: var(--dark); line-height: 1.18; margin-bottom: 1rem;
+  }
+  .section-sub {
+    font-size: 0.88rem; color: var(--muted); line-height: 1.9; max-width: 500px;
+  }
+
+  /* ── PRODUCTS ── */
+  #shop { background: var(--white); }
+  .products-header {
+    display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4.5rem;
+  }
+  .products-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.2rem; }
+  .product-card { cursor: pointer; transition: transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94); }
+  .product-card:hover { transform: translateY(-10px); }
+  .product-img {
+    aspect-ratio: 3/4; border-radius: 3px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    margin-bottom: 1.3rem; position: relative; overflow: hidden;
+    transition: box-shadow 0.3s;
+  }
+  .product-card:hover .product-img { box-shadow: 0 20px 60px rgba(0,0,0,0.10); }
+  .product-icon { font-size: 3.8rem; margin-bottom: 0.6rem; transition: transform 0.4s; }
+  .product-card:hover .product-icon { transform: scale(1.1) translateY(-4px); }
+  .product-name-big {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem; font-weight: 400; color: var(--dark); text-align: center; padding: 0 1rem;
+  }
+  .product-overlay {
+    position: absolute; inset: 0;
+    background: rgba(42,31,26,0.07);
+    display: flex; align-items: flex-end; padding: 1.3rem;
+    opacity: 0; transition: opacity 0.35s;
+  }
+  .product-card:hover .product-overlay { opacity: 1; }
+  .add-cart-btn {
+    width: 100%; background: var(--dark); color: var(--cream);
+    border: none; padding: 0.9rem;
+    font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
+    cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.2s;
+  }
+  .add-cart-btn:hover { background: var(--terracotta); }
+  .product-info { padding: 0 0.3rem; }
+  .product-name { font-size: 0.88rem; font-weight: 400; color: var(--dark); margin-bottom: 0.35rem; }
+  .product-desc { font-size: 0.76rem; color: var(--muted); margin-bottom: 0.7rem; line-height: 1.6; }
+  .product-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.25rem; font-weight: 500; color: var(--terracotta);
+  }
+  .product-rating { font-size: 0.68rem; color: var(--rose); }
+  .product-badge {
+    position: absolute; top: 0.9rem; left: 0.9rem;
+    background: var(--dark); color: var(--cream);
+    font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 0.3rem 0.7rem;
+  }
+
+  /* ── ABOUT ── */
+  #about {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 7rem; align-items: center; background: var(--cream); padding: 8rem 6rem;
+  }
+  .about-visual {
+    height: 540px;
+    background: linear-gradient(165deg, #F0E4DC 0%, #DEC9C0 100%);
+    border-radius: 3px;
+    display: flex; align-items: center; justify-content: center; position: relative;
+    overflow: visible;
+  }
+  .about-circle {
+    width: 270px; height: 270px; border-radius: 50%;
+    background: white; box-shadow: 0 25px 70px rgba(180,110,90,0.18);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem;
+  }
+  .about-circle span { font-size: 3.2rem; }
+  .about-circle p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem; font-style: italic; color: var(--deep-rose);
+    text-align: center; padding: 0 1.8rem; line-height: 1.6;
+  }
+  .about-stats {
+    position: absolute; right: -2.5rem; bottom: 3.5rem;
+    background: white; padding: 1.6rem 2.2rem;
+    box-shadow: 0 10px 50px rgba(0,0,0,0.07);
+    border-top: 3px solid var(--terracotta);
+  }
+  .about-stats div { display: flex; gap: 2.2rem; }
+  .stat-item { text-align: center; }
+  .stat-num { font-family: 'Cormorant Garamond', serif; font-size: 2.1rem; color: var(--terracotta); display: block; }
+  .stat-label { font-size: 0.65rem; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; }
+  .about-content { padding: 1.5rem 0; }
+  .about-features { margin: 2.2rem 0; display: flex; flex-direction: column; gap: 1.4rem; }
+  .feature-item { display: flex; gap: 1.2rem; align-items: flex-start; }
+  .feature-icon {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--blush); display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; flex-shrink: 0;
+  }
+  .feature-text h4 { font-size: 0.85rem; font-weight: 500; color: var(--dark); margin-bottom: 0.25rem; }
+  .feature-text p { font-size: 0.78rem; color: var(--muted); line-height: 1.7; }
+
+  /* ── SKIN ANALYSIS ── */
+  #skin-analysis { background: var(--dark); color: var(--cream); }
+  #skin-analysis .section-tag { color: var(--rose); }
+  #skin-analysis .section-title { color: var(--cream); }
+  #skin-analysis .section-sub { color: rgba(250,247,242,0.5); }
+  .analysis-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 5rem; align-items: start; margin-top: 4.5rem; }
+  .analysis-form { background: rgba(255,255,255,0.035); border: 1px solid rgba(255,255,255,0.07); padding: 2.8rem; }
+  .form-step { display: none; }
+  .form-step.active { display: block; animation: fadeUp 0.4s ease; }
+  .form-step h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--cream); margin-bottom: 0.5rem; }
+  .form-step p { font-size: 0.8rem; color: rgba(250,247,242,0.45); margin-bottom: 1.6rem; }
+  .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+  .option-btn {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.09);
+    color: rgba(250,247,242,0.8); padding: 1rem 1.1rem;
+    font-size: 0.78rem; cursor: pointer; transition: all 0.22s; text-align: left;
+    font-family: 'DM Sans', sans-serif;
+    display: flex; align-items: center; gap: 0.7rem;
+  }
+  .option-btn:hover, .option-btn.selected { background: var(--terracotta); border-color: var(--terracotta); color: white; }
+  .step-indicator { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 1.8rem; }
+  .step-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: rgba(255,255,255,0.15); transition: all 0.35s;
+  }
+  .step-dot.active { background: var(--terracotta); width: 24px; border-radius: 4px; }
+
+  .result-box {
+    background: rgba(196,136,106,0.1);
+    border: 1px solid rgba(196,136,106,0.3);
+    padding: 2rem; display: none;
+  }
+  .result-box.show { display: block; animation: fadeUp 0.5s ease; }
+  .result-box h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: var(--rose); margin-bottom: 0.9rem; }
+  .result-box p { font-size: 0.83rem; color: rgba(250,247,242,0.7); line-height: 1.85; }
+  .result-products { margin-top: 1.3rem; display: flex; flex-direction: column; gap: 0.55rem; }
+  .result-product { display: flex; align-items: center; gap: 0.8rem; font-size: 0.82rem; color: var(--cream); }
+  .result-product span { color: var(--terracotta); font-size: 1rem; }
+  .result-routine { margin-top: 1.3rem; }
+  .result-routine h5 {
+    font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--rose); margin-bottom: 0.9rem;
+  }
+  .routine-step {
+    display: flex; gap: 0.9rem; align-items: flex-start;
+    margin-bottom: 0.65rem; font-size: 0.79rem; color: rgba(250,247,242,0.6);
+  }
+  .routine-step-num {
+    background: rgba(196,136,106,0.28); color: var(--terracotta);
+    width: 22px; height: 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.62rem; font-weight: 500; flex-shrink: 0; margin-top: 1px;
+  }
+  .result-tip {
+    margin-top: 1.1rem; padding: 0.9rem 1.1rem;
+    background: rgba(255,255,255,0.035);
+    border-left: 2px solid var(--terracotta);
+    font-size: 0.77rem; color: rgba(250,247,242,0.55); font-style: italic; line-height: 1.7;
+  }
+
+  .ai-loading { display: none; text-align: center; padding: 2.5rem 0; }
+  .ai-loading.show { display: block; }
+  .ai-loading-dots { display: inline-flex; gap: 0.5rem; margin-bottom: 1rem; }
+  .ai-loading-dots span {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--terracotta);
+    animation: dotBounce 1.2s ease-in-out infinite;
+  }
+  .ai-loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .ai-loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dotBounce { 0%,80%,100%{transform:scale(0.75);opacity:0.35} 40%{transform:scale(1.25);opacity:1} }
+  .ai-loading p { font-size: 0.8rem; color: rgba(250,247,242,0.45); }
+  .ai-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(196,136,106,0.13); border: 1px solid rgba(196,136,106,0.28);
+    padding: 0.3rem 0.9rem; font-size: 0.62rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--rose); margin-bottom: 1.3rem;
+  }
+  .ai-badge::before { content: '✦'; color: var(--terracotta); }
+
+  .analysis-info h3 { font-family: 'Cormorant Garamond', serif; font-size: 2.1rem; color: var(--cream); margin-bottom: 1.1rem; line-height: 1.3; }
+  .analysis-info p { font-size: 0.84rem; color: rgba(250,247,242,0.5); line-height: 1.85; margin-bottom: 1.6rem; }
+  .analysis-steps { display: flex; flex-direction: column; gap: 1.4rem; }
+  .analysis-step { display: flex; gap: 1.3rem; align-items: flex-start; }
+  .step-num { font-family: 'Cormorant Garamond', serif; font-size: 2.7rem; color: var(--terracotta); opacity: 0.35; line-height: 1; flex-shrink: 0; }
+  .step-info h4 { font-size: 0.84rem; font-weight: 500; color: var(--cream); margin-bottom: 0.3rem; }
+  .step-info p { font-size: 0.77rem; color: rgba(250,247,242,0.4); line-height: 1.65; }
+
+  /* ── TESTIMONIALS ── */
+  #testimonials { background: var(--blush); }
+  .testimonials-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2.2rem; margin-top: 3.5rem; }
+  .testimonial-card {
+    background: white; padding: 2.2rem; border-radius: 2px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .testimonial-card:hover { transform: translateY(-5px); box-shadow: 0 12px 40px rgba(0,0,0,0.07); }
+  .testimonial-stars { color: var(--terracotta); font-size: 0.85rem; margin-bottom: 1.1rem; letter-spacing: 0.1em; }
+  .testimonial-text { font-size: 0.87rem; line-height: 1.85; color: var(--text); margin-bottom: 1.6rem; font-style: italic; }
+  .testimonial-author { display: flex; align-items: center; gap: 0.9rem; }
+  .author-avatar {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--blush), var(--rose));
+    display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+  }
+  .author-name { font-size: 0.82rem; font-weight: 500; color: var(--dark); }
+  .author-tag { font-size: 0.68rem; color: var(--muted); margin-top: 0.1rem; }
+
+  /* ── CONTACT ── */
+  #contact { background: var(--white); }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 5.5rem; margin-top: 4.5rem; }
+  .contact-info { display: flex; flex-direction: column; gap: 2.2rem; }
+  .contact-item { display: flex; gap: 1.3rem; align-items: flex-start; }
+  .contact-icon {
+    width: 48px; height: 48px; background: var(--blush); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0;
+    transition: background 0.3s;
+  }
+  .contact-item:hover .contact-icon { background: var(--rose); }
+  .contact-item h4 { font-size: 0.72rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em; color: var(--dark); margin-bottom: 0.35rem; }
+  .contact-item p { font-size: 0.85rem; color: var(--muted); }
+  .contact-form { display: flex; flex-direction: column; gap: 1.3rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
+  .form-field { display: flex; flex-direction: column; gap: 0.45rem; }
+  .form-field label { font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .form-field input, .form-field textarea, .form-field select {
+    background: var(--cream); border: 1px solid var(--border);
+    padding: 0.9rem 1.1rem; font-size: 0.85rem; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-weight: 300;
+    transition: border-color 0.25s; outline: none; resize: none;
+    -webkit-appearance: none;
+  }
+  .form-field input:focus, .form-field textarea:focus, .form-field select:focus { border-color: var(--terracotta); }
+  .form-success {
+    display: none; background: rgba(196,136,106,0.08);
+    border: 1px solid var(--terracotta);
+    padding: 1rem 1.3rem; font-size: 0.84rem; color: var(--terracotta);
+  }
+  .form-error {
+    display: none; background: rgba(200,80,80,0.06);
+    border: 1px solid rgba(200,80,80,0.35);
+    padding: 1rem 1.3rem; font-size: 0.84rem; color: #c05050;
+  }
+
+  /* ── CART DRAWER ── */
+  .cart-overlay {
+    position: fixed; inset: 0; background: rgba(42,31,26,0.5);
+    z-index: 200; opacity: 0; visibility: hidden; transition: all 0.35s;
+  }
+  .cart-overlay.open { opacity: 1; visibility: visible; }
+  .cart-drawer {
+    position: fixed; top: 0; right: -460px; bottom: 0;
+    width: 440px; background: var(--cream);
+    z-index: 201; transition: right 0.45s cubic-bezier(0.4,0,0.2,1);
+    display: flex; flex-direction: column;
+  }
+  .cart-drawer.open { right: 0; }
+  .cart-header {
+    padding: 2.2rem; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .cart-header h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 400; }
+  .cart-close { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: var(--muted); transition: color 0.2s; }
+  .cart-close:hover { color: var(--dark); }
+  .cart-items { flex: 1; overflow-y: auto; padding: 1.5rem 2.2rem; }
+  .cart-empty { text-align: center; padding: 5rem 0; }
+  .cart-empty span { font-size: 3.5rem; display: block; margin-bottom: 1rem; }
+  .cart-empty p { font-size: 0.85rem; color: var(--muted); }
+  .cart-item {
+    display: flex; gap: 1.1rem; align-items: center;
+    padding: 1.1rem 0; border-bottom: 1px solid var(--border);
+  }
+  .cart-item-img {
+    width: 68px; height: 84px; background: var(--blush); border-radius: 2px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.9rem; flex-shrink: 0;
+  }
+  .cart-item-info { flex: 1; }
+  .cart-item-name { font-size: 0.86rem; font-weight: 400; color: var(--dark); margin-bottom: 0.25rem; }
+  .cart-item-price { font-size: 0.82rem; color: var(--terracotta); font-family: 'Cormorant Garamond', serif; font-size: 1rem; }
+  .cart-item-qty { display: flex; align-items: center; gap: 0.7rem; margin-top: 0.55rem; }
+  .qty-btn {
+    width: 26px; height: 26px; border: 1px solid var(--border);
+    background: none; cursor: pointer; font-size: 0.95rem;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--dark); transition: all 0.2s;
+  }
+  .qty-btn:hover { background: var(--dark); color: var(--cream); border-color: var(--dark); }
+  .qty-num { font-size: 0.82rem; min-width: 22px; text-align: center; }
+  .remove-item { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.9rem; transition: color 0.2s; }
+  .remove-item:hover { color: #c05050; }
+  .cart-footer { padding: 1.6rem 2.2rem; border-top: 1px solid var(--border); background: white; }
+  .cart-subtotal { display: flex; justify-content: space-between; font-size: 0.83rem; margin-bottom: 0.55rem; color: var(--muted); }
+  .cart-total { display: flex; justify-content: space-between; font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; margin-bottom: 1.6rem; color: var(--dark); }
+  .checkout-btn {
+    width: 100%; background: var(--dark); color: var(--cream);
+    border: none; padding: 1.15rem;
+    font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase;
+    cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.25s;
+  }
+  .checkout-btn:hover { background: var(--terracotta); }
+
+  /* ── CHECKOUT MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(42,31,26,0.72);
+    z-index: 300; opacity: 0; visibility: hidden; transition: all 0.35s;
+    display: flex; align-items: center; justify-content: center; padding: 1.5rem;
+  }
+  .modal-overlay.open { opacity: 1; visibility: visible; }
+  .modal {
+    background: var(--cream); max-width: 580px; width: 100%;
+    padding: 2.8rem; position: relative;
+    transform: translateY(24px); transition: transform 0.35s;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-close {
+    position: absolute; top: 1.3rem; right: 1.4rem;
+    background: none; border: none; font-size: 1.1rem; cursor: pointer; color: var(--muted);
+    transition: color 0.2s;
+  }
+  .modal-close:hover { color: var(--dark); }
+  .modal h2 { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 400; margin-bottom: 0.3rem; }
+  .modal-sub { font-size: 0.78rem; color: var(--muted); margin-bottom: 2.2rem; }
+  .modal-section { margin-bottom: 1.8rem; }
+  .modal-section-title { font-size: 0.66rem; letter-spacing: 0.17em; text-transform: uppercase; color: var(--terracotta); margin-bottom: 1.1rem; }
+  .checkout-items { display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 1rem; }
+  .checkout-item {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.85rem; padding: 0.65rem 0; border-bottom: 1px solid var(--border);
+  }
+  .checkout-item-name { color: var(--dark); }
+  .checkout-item-price { color: var(--terracotta); font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; }
+  .checkout-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .checkout-form-grid .full { grid-column: 1/-1; }
+  .checkout-field { display: flex; flex-direction: column; gap: 0.35rem; }
+  .checkout-field label { font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  .checkout-field input, .checkout-field select {
+    background: white; border: 1px solid var(--border);
+    padding: 0.8rem 1rem; font-size: 0.85rem; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-weight: 300; outline: none;
+    transition: border-color 0.25s; -webkit-appearance: none;
+  }
+  .checkout-field input:focus { border-color: var(--terracotta); }
+  .checkout-total-row {
+    display: flex; justify-content: space-between; padding: 0.5rem 0;
+    font-size: 0.83rem; color: var(--muted);
+  }
+  .checkout-total-final {
+    display: flex; justify-content: space-between; padding: 0.9rem 0;
+    border-top: 1px solid var(--border); margin-top: 0.5rem;
+    font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: var(--dark);
+  }
+  .place-order-btn {
+    width: 100%; background: var(--dark); color: var(--cream);
+    border: none; padding: 1.15rem;
+    font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase;
+    cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background 0.25s; margin-top: 1.1rem;
+  }
+  .place-order-btn:hover { background: var(--terracotta); }
+  .place-order-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+  .order-success { text-align: center; padding: 2.5rem 0; display: none; }
+  .order-success.show { display: block; animation: fadeUp 0.5s ease; }
+  .order-success .big-icon { font-size: 4.5rem; display: block; margin-bottom: 1.2rem; }
+  .order-success h3 { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; color: var(--dark); margin-bottom: 0.6rem; }
+  .order-success p { font-size: 0.85rem; color: var(--muted); line-height: 1.8; }
+  .order-id { font-size: 0.73rem; color: var(--terracotta); margin-top: 0.6rem; letter-spacing: 0.12em; }
+
+  /* ── FOOTER ── */
+  footer { background: var(--dark); color: var(--cream); padding: 5.5rem 6rem 2.5rem; }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3.5rem; margin-bottom: 4.5rem; }
+  .footer-brand .nav-logo { color: var(--cream); display: block; margin-bottom: 1.1rem; }
+  .footer-brand p { font-size: 0.8rem; color: rgba(250,247,242,0.38); line-height: 1.9; max-width: 280px; }
+  .footer-col h4 { font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--rose); margin-bottom: 1.4rem; }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+  .footer-col ul a { font-size: 0.8rem; color: rgba(250,247,242,0.38); text-decoration: none; transition: color 0.25s; cursor: pointer; }
+  .footer-col ul a:hover { color: var(--cream); }
+  .footer-bottom {
+    padding-top: 2.2rem; border-top: 1px solid rgba(255,255,255,0.05);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-bottom p { font-size: 0.72rem; color: rgba(250,247,242,0.25); }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 2.5rem; left: 50%; transform: translateX(-50%) translateY(120px);
+    background: var(--dark); color: var(--cream);
+    padding: 1rem 2rem; font-size: 0.8rem; letter-spacing: 0.06em;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.18);
+    z-index: 500; transition: transform 0.45s cubic-bezier(0.4,0,0.2,1);
+    display: flex; align-items: center; gap: 0.8rem; white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast .toast-icon { color: var(--terracotta); font-size: 1rem; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(32px)} to{opacity:1;transform:translateY(0)} }
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.75s ease, transform 0.75s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal:nth-child(2) { transition-delay: 0.1s; }
+  .reveal:nth-child(3) { transition-delay: 0.2s; }
+
+  /* ── MOBILE ── */
+  @media (max-width: 960px) {
+    nav { padding: 1rem 1.8rem; }
+    nav.scrolled { padding: 0.7rem 1.8rem; }
+    .nav-links { display: none; }
+    #home { grid-template-columns: 1fr; }
+    .hero-image { display: none; }
+    .hero-text { padding: 5rem 2rem 3.5rem; }
+    section { padding: 5rem 2rem; }
+    .products-grid { grid-template-columns: repeat(2,1fr); gap: 1.5rem; }
+    #about { grid-template-columns: 1fr; gap: 3.5rem; padding: 5rem 2rem; }
+    .about-visual { height: 300px; }
+    .about-stats { right: 1rem; bottom: -2.5rem; }
+    .analysis-grid { grid-template-columns: 1fr; }
+    .contact-grid { grid-template-columns: 1fr; gap: 3.5rem; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 2.5rem; padding-bottom: 1rem; }
+    footer { padding: 4rem 2rem 2rem; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .products-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    .cart-drawer { width: 100%; right: -100%; }
+    .form-row { grid-template-columns: 1fr; }
+    .checkout-form-grid { grid-template-columns: 1fr; }
+    .checkout-form-grid .full { grid-column: 1; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-inner">
+    <div class="loader-logo">Orlumi</div>
+    <div class="loader-line"></div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a class="nav-logo" onclick="smoothScroll('home')">Orlumi</a>
+  <ul class="nav-links">
+    <li><a onclick="smoothScroll('home')">Home</a></li>
+    <li><a onclick="smoothScroll('shop')">Shop</a></li>
+    <li><a onclick="smoothScroll('skin-analysis')">Skin Analysis</a></li>
+    <li><a onclick="smoothScroll('about')">About</a></li>
+    <li><a onclick="smoothScroll('contact')">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="cart-btn" onclick="openCart()" aria-label="Open cart">
+      🛒
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="home" style="padding:0">
+  <div class="hero-text">
+    <p class="hero-tag">Premium Skincare</p>
+    <h1 class="hero-title">Discover Skincare<br>Designed for Your<br><em>Unique Glow</em></h1>
+    <p class="hero-sub">Science-backed formulas crafted with clean, effective ingredients for every skin type. Because your glow deserves the best.</p>
+    <div style="display:flex;gap:1.1rem;flex-wrap:wrap">
+      <button class="btn-primary" onclick="smoothScroll('shop')">Shop Now <span>→</span></button>
+      <button class="btn-outline" onclick="smoothScroll('skin-analysis')">Skin Analysis</button>
+    </div>
+  </div>
+  <div class="hero-image">
+    <div class="hero-image-inner"></div>
+    <div class="hero-visual">
+      <div class="hero-circle"><em>"Illuminate Your<br>Natural Glow"</em></div>
+    </div>
+    <div class="hero-badge"><p>Trusted by</p><strong>10K+ Users</strong></div>
+    <div class="hero-accent">Pure · Effective · Personalized</div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Clean Beauty</span><span class="dot">✦</span>
+    <span>Vitamin C Serum</span><span class="dot">✦</span>
+    <span>HydroGlow</span><span class="dot">✦</span>
+    <span>SPF Protection</span><span class="dot">✦</span>
+    <span>Natural Ingredients</span><span class="dot">✦</span>
+    <span>Cruelty Free</span><span class="dot">✦</span>
+    <span>Dermatologist Tested</span><span class="dot">✦</span>
+    <span>AI Powered</span><span class="dot">✦</span>
+    <span>Clean Beauty</span><span class="dot">✦</span>
+    <span>Vitamin C Serum</span><span class="dot">✦</span>
+    <span>HydroGlow</span><span class="dot">✦</span>
+    <span>SPF Protection</span><span class="dot">✦</span>
+    <span>Natural Ingredients</span><span class="dot">✦</span>
+    <span>Cruelty Free</span><span class="dot">✦</span>
+    <span>Dermatologist Tested</span><span class="dot">✦</span>
+    <span>AI Powered</span><span class="dot">✦</span>
+  </div>
+</div>
+
+<!-- SHOP -->
+<section id="shop">
+  <div class="products-header reveal">
+    <div>
+      <p class="section-tag">Our Collection</p>
+      <h2 class="section-title">Bestselling Products</h2>
+    </div>
+    <p class="section-sub" style="max-width:300px">Formulated with the finest ingredients for radiant, healthy skin.</p>
+  </div>
+  <div class="products-grid" id="productsGrid"></div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-visual reveal">
+    <div class="about-circle"><span>🌿</span><p>Pure • Effective<br>Personalized</p></div>
+    <div class="about-stats">
+      <div>
+        <div class="stat-item"><span class="stat-num">4</span><span class="stat-label">Products</span></div>
+        <div class="stat-item"><span class="stat-num">100%</span><span class="stat-label">Natural</span></div>
+        <div class="stat-item"><span class="stat-num">10K+</span><span class="stat-label">Customers</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="about-content reveal">
+    <p class="section-tag">Our Story</p>
+    <h2 class="section-title">More Than Just Skincare</h2>
+    <p class="section-sub" style="margin-bottom:0">Orlumi is a premium skincare brand focused on enhancing natural beauty through simple, effective, and personalized products. We believe every skin is unique — and deserves to glow.</p>
+    <div class="about-features">
+      <div class="feature-item"><div class="feature-icon">🌱</div><div class="feature-text"><h4>Clean Ingredients</h4><p>Every product is formulated with carefully sourced, natural ingredients — free from harmful chemicals.</p></div></div>
+      <div class="feature-item"><div class="feature-icon">🔬</div><div class="feature-text"><h4>Dermatologist Tested</h4><p>All our formulas are dermatologist-approved and clinically tested for safety and efficacy.</p></div></div>
+      <div class="feature-item"><div class="feature-icon">🐰</div><div class="feature-text"><h4>Cruelty Free</h4><p>We're proud to be 100% cruelty-free. No animal testing, ever.</p></div></div>
+    </div>
+    <button class="btn-primary" onclick="smoothScroll('shop')">Explore Collection <span>→</span></button>
+  </div>
+</section>
+
+<!-- SKIN ANALYSIS (AI-POWERED) -->
+<section id="skin-analysis">
+  <div class="reveal">
+    <p class="section-tag">Personalized Care</p>
+    <h2 class="section-title">Find Your Perfect Routine</h2>
+    <p class="section-sub">Answer a few quick questions and our AI will craft a personalized skincare routine just for you.</p>
+  </div>
+  <div class="analysis-grid">
+    <div class="analysis-form reveal">
+      <div class="step-indicator" id="stepIndicator"></div>
+      <div id="quizSteps"></div>
+      <div class="ai-loading" id="aiLoading">
+        <div class="ai-loading-dots"><span></span><span></span><span></span></div>
+        <p>Our AI is analysing your skin profile…</p>
+      </div>
+      <div class="result-box" id="resultBox">
+        <div class="ai-badge">AI-Powered Analysis</div>
+        <h4 id="resultTitle">Your Skin Profile</h4>
+        <p id="resultDesc"></p>
+        <div class="result-products" id="resultProducts"></div>
+        <div class="result-routine" id="resultRoutine"></div>
+        <div class="result-tip" id="resultTip"></div>
+        <button class="btn-primary" style="margin-top:1.6rem;width:100%;justify-content:center" onclick="resetQuiz()">Retake Quiz</button>
+      </div>
+    </div>
+    <div class="analysis-info reveal">
+      <h3>Smart Skincare Begins With Understanding Your Skin</h3>
+      <p>Our AI-powered skin analysis tool matches you with products and routines that truly work for your individual skin needs — not just generic solutions.</p>
+      <div class="analysis-steps">
+        <div class="analysis-step"><div class="step-num">01</div><div class="step-info"><h4>Answer Questions</h4><p>Tell us about your skin type, concerns, and goals through a quick quiz.</p></div></div>
+        <div class="analysis-step"><div class="step-num">02</div><div class="step-info"><h4>AI Analysis</h4><p>Our AI analyses your responses to create a unique skin profile and routine plan.</p></div></div>
+        <div class="analysis-step"><div class="step-num">03</div><div class="step-info"><h4>Personalized Picks</h4><p>Receive curated product recommendations and a step-by-step morning &amp; night routine.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="reveal" style="text-align:center">
+    <p class="section-tag">Reviews</p>
+    <h2 class="section-title">What Our Customers Say</h2>
+  </div>
+  <div class="testimonials-grid">
+    <div class="testimonial-card reveal">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"The Vitamin C Serum literally transformed my skin in 2 weeks. My dark spots have faded and my skin looks so much brighter. Absolutely in love!"</p>
+      <div class="testimonial-author"><div class="author-avatar">👩</div><div><div class="author-name">Priya Sharma</div><div class="author-tag">Verified Buyer · Mumbai</div></div></div>
+    </div>
+    <div class="testimonial-card reveal">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"HydroGlow Moisturizer is everything. I have dry skin and this is the only product that keeps my face hydrated all day. The packaging is so elegant too!"</p>
+      <div class="testimonial-author"><div class="author-avatar">🧖</div><div><div class="author-name">Ananya Roy</div><div class="author-tag">Verified Buyer · Kolkata</div></div></div>
+    </div>
+    <div class="testimonial-card reveal">
+      <div class="testimonial-stars">★★★★☆</div>
+      <p class="testimonial-text">"I've tried many sunscreens but Daily Shield is honestly the best. No white cast, doesn't feel heavy. Perfect for daily use under makeup."</p>
+      <div class="testimonial-author"><div class="author-avatar">💁</div><div><div class="author-name">Meera Nair</div><div class="author-tag">Verified Buyer · Bangalore</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="reveal">
+    <p class="section-tag">Get in Touch</p>
+    <h2 class="section-title">We'd Love to Hear From You</h2>
+    <p class="section-sub">Questions, feedback, or skincare advice — we're here for all of it.</p>
+  </div>
+  <div class="contact-grid">
+    <div class="contact-info reveal">
+      <div class="contact-item"><div class="contact-icon">📧</div><div><h4>Email</h4><p>support@orlumi.com</p><p style="font-size:0.73rem;color:var(--muted);margin-top:0.2rem">We reply within 24 hours</p></div></div>
+      <div class="contact-item"><div class="contact-icon">📞</div><div><h4>Phone</h4><p>+91 98765 43210</p><p style="font-size:0.73rem;color:var(--muted);margin-top:0.2rem">Mon–Sat, 10am–6pm IST</p></div></div>
+      <div class="contact-item"><div class="contact-icon">📍</div><div><h4>Location</h4><p>Kolkata, West Bengal, India</p></div></div>
+      <div class="contact-item"><div class="contact-icon">🕐</div><div><h4>Working Hours</h4><p>Monday – Saturday</p><p style="font-size:0.73rem;color:var(--muted);margin-top:0.2rem">10:00 AM – 6:00 PM IST</p></div></div>
+    </div>
+    <div class="reveal">
+      <form class="contact-form" id="contactForm" onsubmit="submitContact(event)">
+        <div class="form-row">
+          <div class="form-field"><label>Full Name *</label><input type="text" id="cName" placeholder="Your name" required></div>
+          <div class="form-field"><label>Email Address *</label><input type="email" id="cEmail" placeholder="your@email.com" required></div>
+        </div>
+        <div class="form-field">
+          <label>Subject</label>
+          <select id="cSubject">
+            <option>Product Inquiry</option>
+            <option>Order Support</option>
+            <option>Skincare Advice</option>
+            <option>Returns &amp; Refunds</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-field"><label>Message *</label><textarea id="cMessage" rows="5" placeholder="How can we help you?" required></textarea></div>
+        <div class="form-success" id="formSuccess">✅ Thank you! Your message has been sent. We'll respond within 24 hours.</div>
+        <div class="form-error" id="formError">⚠️ Something went wrong. Please try again.</div>
+        <button type="submit" class="btn-primary" id="contactSubmitBtn" style="align-self:flex-start">Send Message <span>→</span></button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a class="nav-logo">Orlumi</a>
+      <p>Premium skincare designed to illuminate your natural glow. Clean ingredients, proven results.</p>
+    </div>
+    <div class="footer-col"><h4>Shop</h4><ul>
+      <li><a onclick="smoothScroll('shop')">All Products</a></li>
+      <li><a onclick="smoothScroll('shop')">Serums</a></li>
+      <li><a onclick="smoothScroll('shop')">Moisturizers</a></li>
+      <li><a onclick="smoothScroll('shop')">Sunscreens</a></li>
+      <li><a onclick="smoothScroll('shop')">Lip Care</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Company</h4><ul>
+      <li><a onclick="smoothScroll('about')">About Us</a></li>
+      <li><a onclick="smoothScroll('skin-analysis')">Skin Analysis</a></li>
+      <li><a onclick="smoothScroll('testimonials')">Reviews</a></li>
+      <li><a onclick="smoothScroll('contact')">Contact</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Support</h4><ul>
+      <li><a>FAQ</a></li>
+      <li><a>Shipping Policy</a></li>
+      <li><a>Returns</a></li>
+      <li><a>Privacy Policy</a></li>
+      <li><a>Terms of Use</a></li>
+    </ul></div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Orlumi. All rights reserved.</p>
+    <p>Made with ❤️ for healthy skin</p>
+  </div>
+</footer>
+
+<!-- CART OVERLAY + DRAWER -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-header">
+    <h2>Your Cart</h2>
+    <button class="cart-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty"><span>🛒</span><p>Your cart is empty</p></div>
+  </div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-subtotal"><span>Subtotal</span><span id="cartSubtotal">₹0</span></div>
+    <div class="cart-subtotal"><span>Shipping</span><span>Free</span></div>
+    <div class="cart-total"><span>Total</span><span id="cartTotal">₹0</span></div>
+    <button class="checkout-btn" onclick="openCheckout()">Proceed to Checkout →</button>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-overlay" id="checkoutModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeCheckout()">✕</button>
+    <div id="checkoutContent">
+      <h2>Checkout</h2>
+      <p class="modal-sub">Complete your order below</p>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Order Summary</div>
+        <div class="checkout-items" id="checkoutItems"></div>
+        <div class="checkout-total-row"><span>Subtotal</span><span id="coSubtotal">₹0</span></div>
+        <div class="checkout-total-row"><span>Shipping</span><span>Free</span></div>
+        <div class="checkout-total-row"><span>Tax (5%)</span><span id="coTax">₹0</span></div>
+        <div class="checkout-total-final"><span>Total</span><span id="coTotal">₹0</span></div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Delivery Information</div>
+        <div class="checkout-form-grid">
+          <div class="checkout-field"><label>First Name *</label><input type="text" id="coFirst" placeholder="Priya" required></div>
+          <div class="checkout-field"><label>Last Name *</label><input type="text" id="coLast" placeholder="Sharma" required></div>
+          <div class="checkout-field full"><label>Email Address *</label><input type="email" id="coEmail" placeholder="you@email.com" required></div>
+          <div class="checkout-field full"><label>Phone Number *</label><input type="tel" id="coPhone" placeholder="+91 98765 43210" required></div>
+          <div class="checkout-field full"><label>Street Address *</label><input type="text" id="coAddress" placeholder="Flat 4B, Park Street" required></div>
+          <div class="checkout-field"><label>City *</label><input type="text" id="coCity" placeholder="Kolkata" required></div>
+          <div class="checkout-field"><label>PIN Code *</label><input type="text" id="coPin" placeholder="700016" required></div>
+          <div class="checkout-field full">
+            <label>State</label>
+            <select id="coState">
+              <option>West Bengal</option><option>Maharashtra</option><option>Karnataka</option>
+              <option>Tamil Nadu</option><option>Delhi</option><option>Gujarat</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">Payment Method</div>
+        <div class="checkout-form-grid">
+          <div class="checkout-field full">
+            <label>Select Payment</label>
+            <select id="coPayment" onchange="toggleUpiField()">
+              <option value="upi">UPI</option>
+              <option value="cod">Cash on Delivery</option>
+              <option value="card">Credit / Debit Card</option>
+              <option value="netbanking">Net Banking</option>
+            </select>
+          </div>
+          <div class="checkout-field full" id="upiField">
+            <label>UPI ID</label>
+            <input type="text" id="coUpi" placeholder="yourname@upi">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-error" id="checkoutError" style="display:none">⚠️ Please fill all required fields.</div>
+      <button class="place-order-btn" id="placeOrderBtn" onclick="placeOrder()">Place Order →</button>
+    </div>
+
+    <div class="order-success" id="orderSuccess">
+      <span class="big-icon">🎉</span>
+      <h3>Order Placed!</h3>
+      <p>Thank you for shopping with Orlumi. Your order has been confirmed and will be delivered within 3–5 business days.</p>
+      <p class="order-id" id="orderId"></p>
+      <button class="place-order-btn" style="margin-top:1.8rem" onclick="closeCheckout()">Continue Shopping</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <span class="toast-icon">✓</span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════════════════════
+// DATA  (embedded from products.json & quiz.json)
+// ════════════════════════════════════════════════════════════════════════════
+
+const PRODUCTS = [
+  {
+    id: 1, name: 'Radiance Vitamin C Serum', short: 'Vitamin C Serum',
+    description: 'Brightens skin and reduces dullness with powerful antioxidants. Our lightweight Vitamin C formula is stabilised at 15% ascorbic acid to visibly even skin tone, fade dark spots, and deliver a lit-from-within glow.',
+    price: 599, category: 'serum', icon: '✨', color: '#FFF3E0', badge: 'Bestseller',
+    ingredients: ['Ascorbic Acid 15%', 'Hyaluronic Acid', 'Niacinamide', 'Ferulic Acid'],
+    skin_type_tags: ['dry', 'oily', 'combination', 'normal'],
+    concern_tags: ['dullness', 'pigmentation', 'glow', 'anti-aging'],
+    rating: 4.9, reviews_count: 1243
+  },
+  {
+    id: 2, name: 'HydroGlow Gel Moisturizer', short: 'Gel Moisturizer',
+    description: 'Deep hydration for soft and plump skin all day long. Infused with Hyaluronic Acid and Aloe Vera, this oil-free gel moisturiser provides 48-hour hydration without clogging pores.',
+    price: 499, category: 'moisturizer', icon: '💧', color: '#E3F2FD', badge: 'New',
+    ingredients: ['Hyaluronic Acid', 'Aloe Vera', 'Centella Asiatica', 'Ceramides'],
+    skin_type_tags: ['dry', 'combination', 'normal', 'sensitive'],
+    concern_tags: ['hydration', 'dryness', 'sensitivity', 'plumping'],
+    rating: 4.8, reviews_count: 876
+  },
+  {
+    id: 3, name: 'Daily Shield Sunscreen SPF 50', short: 'SPF 50 Sunscreen',
+    description: 'Protects against harmful UV rays with a lightweight, non-greasy formula. Broad-spectrum PA++++ coverage in a fluid finish that wears beautifully under makeup.',
+    price: 399, category: 'sunscreen', icon: '☀️', color: '#FFF8E1', badge: 'Essential',
+    ingredients: ['Zinc Oxide', 'Octinoxate', 'Niacinamide', 'Vitamin E'],
+    skin_type_tags: ['dry', 'oily', 'combination', 'normal', 'sensitive'],
+    concern_tags: ['sun-protection', 'uv-damage', 'anti-aging', 'pigmentation'],
+    rating: 4.7, reviews_count: 2104
+  },
+  {
+    id: 4, name: 'Nourish Lip Balm', short: 'Lip Balm',
+    description: 'Provides long-lasting moisture for soft, supple lips. Enriched with Shea Butter and Vitamin E for round-the-clock nourishment and a subtle natural tint.',
+    price: 199, category: 'lip-care', icon: '💋', color: '#FCE4EC', badge: 'Fan Fave',
+    ingredients: ['Shea Butter', 'Vitamin E', 'Castor Oil', 'Beeswax'],
+    skin_type_tags: ['dry', 'oily', 'combination', 'normal', 'sensitive'],
+    concern_tags: ['lip-care', 'dryness', 'hydration'],
+    rating: 4.9, reviews_count: 654
+  }
+];
+
+const QUIZ_DATA = {
+  questions: [
+    { id: 'skin_type', question: 'What is your skin type?', hint: 'Choose the one that best describes your skin most of the time',
+      options: [{ value:'dry', label:'Dry', icon:'💧' }, { value:'oily', label:'Oily', icon:'✨' }, { value:'combination', label:'Combination', icon:'⚖️' }, { value:'normal', label:'Normal', icon:'🌿' }]
+    },
+    { id: 'acne', question: 'Do you have acne or breakouts?', hint: 'Helps us recommend the right products for your concern',
+      options: [{ value:'frequently', label:'Frequently', icon:'😔' }, { value:'sometimes', label:'Sometimes', icon:'😐' }, { value:'rarely', label:'Rarely', icon:'🙂' }, { value:'never', label:'Never', icon:'😊' }]
+    },
+    { id: 'sensitivity', question: 'Is your skin sensitive?', hint: 'Does your skin react easily to products or environment?',
+      options: [{ value:'very', label:'Very Sensitive', icon:'🌸' }, { value:'mildly', label:'Mildly Sensitive', icon:'🍃' }, { value:'not', label:'Not Sensitive', icon:'💪' }]
+    },
+    { id: 'concern', question: 'What is your main skin concern?', hint: 'Pick your top priority right now',
+      options: [{ value:'glow', label:'Dullness & Glow', icon:'🌟' }, { value:'hydration', label:'Hydration', icon:'💧' }, { value:'sun-protection', label:'Sun Protection', icon:'🛡️' }, { value:'lip-care', label:'Lip Care', icon:'👄' }]
+    }
+  ],
+  recommendation_matrix: {
+    glow: {
+      profile: 'Glow Seeker', primary_product_ids: [1, 2],
+      morning_routine: ['Cleanse face with a gentle cleanser', 'Apply Radiance Vitamin C Serum — let absorb for 2 minutes', 'Moisturise with HydroGlow Gel', 'Finish with Daily Shield SPF 50'],
+      night_routine: ['Double cleanse to remove SPF and impurities', 'Apply Vitamin C Serum and follow with HydroGlow Moisturiser'],
+      tip: 'Consistency is key — use your Vitamin C serum every morning for at least 4 weeks to see visible brightening results.'
+    },
+    hydration: {
+      profile: 'Moisture Maven', primary_product_ids: [2, 4],
+      morning_routine: ['Cleanse with a hydrating, sulfate-free cleanser', 'Apply HydroGlow Gel while face is slightly damp', 'Lock everything in with Daily Shield SPF 50'],
+      night_routine: ['Cleanse to remove the day\'s impurities', 'Apply a generous layer of HydroGlow Gel', 'Seal lips with Nourish Lip Balm before sleep'],
+      tip: 'Apply your moisturiser within 60 seconds of washing your face while skin is still slightly damp — this boosts hydration absorption significantly.'
+    },
+    'sun-protection': {
+      profile: 'Shield Seeker', primary_product_ids: [3, 1],
+      morning_routine: ['Cleanse face with a gentle cleanser', 'Apply Vitamin C Serum for an antioxidant boost', 'Generously apply Daily Shield SPF 50 — reapply every 2–3 hours outdoors'],
+      night_routine: ['Thoroughly remove SPF with a double cleanse', 'Apply Vitamin C Serum to repair daytime damage', 'Finish with HydroGlow Moisturiser before sleep'],
+      tip: 'Apply at least ¼ teaspoon of sunscreen to the face alone and reapply every 2–3 hours for full SPF 50 protection.'
+    },
+    'lip-care': {
+      profile: 'Lip Lover', primary_product_ids: [4, 2],
+      morning_routine: ['Gently exfoliate lips with a damp cloth', 'Apply Nourish Lip Balm generously', 'Cleanse face and apply HydroGlow Moisturiser'],
+      night_routine: ['Apply a thick layer of Nourish Lip Balm as an overnight mask', 'Apply HydroGlow as your overnight face moisturiser'],
+      tip: 'Avoid licking your lips — saliva dries them out further. Apply Nourish Lip Balm at the first sign of dryness.'
+    }
+  }
+};
+
+// ════════════════════════════════════════════════════════════════════════════
+// IN-MEMORY STORES  (mirrors the Express routes)
+// ════════════════════════════════════════════════════════════════════════════
+
+const contactSubmissions = [];
+const placedOrders = [];
+
+// ════════════════════════════════════════════════════════════════════════════
+// RECOMMENDATION ENGINE  (mirrors routes/analyze.js)
+// ════════════════════════════════════════════════════════════════════════════
+
+function buildRecommendation(answers) {
+  const { skin_type, acne, sensitivity, concern } = answers;
+  const matrix = QUIZ_DATA.recommendation_matrix;
+  const entry = matrix[concern] || matrix['glow'];
+  let ids = [...entry.primary_product_ids];
+
+  // Always add SPF unless concern is already sun-protection
+  if (!ids.includes(3) && concern !== 'sun-protection') ids.push(3);
+  // Very sensitive → ensure moisturiser included
+  if (sensitivity === 'very' && !ids.includes(2)) ids.unshift(2);
+  ids = [...new Set(ids)].slice(0, 3);
+
+  const recommended_products = ids
+    .map(id => PRODUCTS.find(p => p.id === id))
+    .filter(Boolean);
+
+  const skinLabel = skin_type.charAt(0).toUpperCase() + skin_type.slice(1);
+  const acneNote  = acne === 'frequently' ? ' with acne-prone tendencies' : '';
+  const sensNote  = sensitivity === 'very' ? ' and heightened sensitivity' : '';
+
+  const descMap = {
+    glow: `Your ${skinLabel} skin${acneNote}${sensNote} is craving brightness and radiance. Vitamin C will target dullness, even your skin tone, and reveal a healthy glow. Pair it with consistent hydration to maximise luminosity.`,
+    hydration: `Your ${skinLabel} skin${acneNote}${sensNote} needs a serious boost of lasting moisture. Humectant-rich formulas will draw water into the skin and lock it in throughout the day. Don't forget your lips — they dehydrate faster than the rest of the face.`,
+    'sun-protection': `Smart choice! Sun protection is the #1 anti-ageing step for ${skinLabel} skin${acneNote}${sensNote}. Consistent SPF prevents pigmentation, collagen breakdown, and UV-induced damage. Layer an antioxidant serum underneath for double the defence.`,
+    'lip-care': `Your ${skinLabel} skin${acneNote}${sensNote} needs targeted lip nourishment. Lips lack sebaceous glands so they dehydrate faster than the rest of the face. Combining a rich lip balm with a full-face moisturiser keeps you comfortable all day.`
+  };
+
+  return {
+    profile: entry.profile,
+    description: descMap[concern] || descMap['glow'],
+    recommended_products,
+    morning_routine: entry.morning_routine,
+    night_routine: entry.night_routine,
+    tip: entry.tip
+  };
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// CART
+// ════════════════════════════════════════════════════════════════════════════
+
+let cart = JSON.parse(localStorage.getItem('orlumi_cart') || '[]');
+
+function saveCart() { localStorage.setItem('orlumi_cart', JSON.stringify(cart)); }
+
+function addToCart(productId) {
+  const p = PRODUCTS.find(x => x.id === productId);
+  const existing = cart.find(x => x.id === productId);
+  if (existing) existing.qty++;
+  else cart.push({ id: p.id, short: p.short, price: p.price, icon: p.icon, color: p.color, qty: 1 });
+  saveCart(); renderCart();
+  showToast(p.short + ' added to cart');
+}
+
+function updateQty(id, delta) {
+  const item = cart.find(x => x.id === id);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) cart = cart.filter(x => x.id !== id);
+  saveCart(); renderCart();
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(x => x.id !== id);
+  saveCart(); renderCart();
+}
+
+function renderCart() {
+  document.getElementById('cartCount').textContent = cart.reduce((s, i) => s + i.qty, 0);
+  const el = document.getElementById('cartItems');
+  const footer = document.getElementById('cartFooter');
+  if (!cart.length) {
+    el.innerHTML = `<div class="cart-empty"><span>🛒</span><p>Your cart is empty</p></div>`;
+    footer.style.display = 'none';
+    return;
+  }
+  footer.style.display = 'block';
+  el.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <div class="cart-item-img" style="background:${item.color}">${item.icon}</div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.short}</div>
+        <div class="cart-item-price">₹${item.price.toLocaleString('en-IN')}</div>
+        <div class="cart-item-qty">
+          <button class="qty-btn" onclick="updateQty(${item.id},-1)" aria-label="Decrease">−</button>
+          <span class="qty-num">${item.qty}</span>
+          <button class="qty-btn" onclick="updateQty(${item.id},1)" aria-label="Increase">+</button>
+        </div>
+      </div>
+      <button class="remove-item" onclick="removeFromCart(${item.id})" aria-label="Remove">✕</button>
+    </div>
+  `).join('');
+  const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  document.getElementById('cartSubtotal').textContent = '₹' + subtotal.toLocaleString('en-IN');
+  document.getElementById('cartTotal').textContent = '₹' + subtotal.toLocaleString('en-IN');
+}
+
+function openCart() {
+  document.getElementById('cartDrawer').classList.add('open');
+  document.getElementById('cartOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeCart() {
+  document.getElementById('cartDrawer').classList.remove('open');
+  document.getElementById('cartOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// CHECKOUT
+// ════════════════════════════════════════════════════════════════════════════
+
+function openCheckout() {
+  if (!cart.length) { showToast('Your cart is empty'); return; }
+  closeCart();
+  populateCheckout();
+  document.getElementById('checkoutModal').classList.add('open');
+  document.getElementById('checkoutContent').style.display = 'block';
+  document.getElementById('orderSuccess').classList.remove('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeCheckout() {
+  document.getElementById('checkoutModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function populateCheckout() {
+  const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const tax = Math.round(subtotal * 0.05);
+  const total = subtotal + tax;
+  document.getElementById('checkoutItems').innerHTML = cart.map(i => `
+    <div class="checkout-item">
+      <span class="checkout-item-name">${i.icon} ${i.short} × ${i.qty}</span>
+      <span class="checkout-item-price">₹${(i.price * i.qty).toLocaleString('en-IN')}</span>
+    </div>
+  `).join('');
+  document.getElementById('coSubtotal').textContent = '₹' + subtotal.toLocaleString('en-IN');
+  document.getElementById('coTax').textContent = '₹' + tax.toLocaleString('en-IN');
+  document.getElementById('coTotal').textContent = '₹' + total.toLocaleString('en-IN');
+}
+
+function toggleUpiField() {
+  const val = document.getElementById('coPayment').value;
+  document.getElementById('upiField').style.display = val === 'upi' ? 'flex' : 'none';
+}
+
+function generateOrderId() {
+  return 'ORL-' + Date.now().toString().slice(-6) + Math.floor(Math.random() * 100);
+}
+
+function placeOrder() {
+  const required = ['coFirst', 'coLast', 'coEmail', 'coPhone', 'coAddress', 'coCity', 'coPin'];
+  const missing = required.some(id => !document.getElementById(id)?.value.trim());
+  if (missing) {
+    document.getElementById('checkoutError').style.display = 'block';
+    return;
+  }
+  document.getElementById('checkoutError').style.display = 'none';
+  const btn = document.getElementById('placeOrderBtn');
+  btn.disabled = true; btn.textContent = 'Processing…';
+
+  // Build order object (mirrors routes/orders.js)
+  const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const tax = Math.round(subtotal * 0.05);
+  const order = {
+    order_id: generateOrderId(),
+    status: 'confirmed',
+    created_at: new Date().toISOString(),
+    customer: {
+      first_name: document.getElementById('coFirst').value.trim(),
+      last_name: document.getElementById('coLast').value.trim(),
+      email: document.getElementById('coEmail').value.trim().toLowerCase(),
+      phone: document.getElementById('coPhone').value.trim(),
+      address: document.getElementById('coAddress').value.trim(),
+      city: document.getElementById('coCity').value.trim(),
+      state: document.getElementById('coState').value,
+      pin_code: document.getElementById('coPin').value.trim()
+    },
+    items: cart.map(i => ({ product_id: i.id, name: i.short, unit_price: i.price, quantity: i.qty, line_total: i.price * i.qty })),
+    totals: { subtotal, tax, shipping: 0, total: subtotal + tax },
+    payment_method: document.getElementById('coPayment').value,
+    estimated_delivery: '3–5 business days'
+  };
+  placedOrders.push(order);
+
+  setTimeout(() => {
+    document.getElementById('orderId').textContent = 'Order ID: ' + order.order_id;
+    document.getElementById('checkoutContent').style.display = 'none';
+    document.getElementById('orderSuccess').classList.add('show');
+    cart = []; saveCart(); renderCart();
+    btn.disabled = false; btn.textContent = 'Place Order →';
+    showToast('Order ' + order.order_id + ' confirmed! 🎉');
+  }, 1800);
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// PRODUCTS RENDER
+// ════════════════════════════════════════════════════════════════════════════
+
+function renderProducts() {
+  document.getElementById('productsGrid').innerHTML = PRODUCTS.map(p => `
+    <div class="product-card" onclick="addToCart(${p.id})">
+      <div class="product-img" style="background:${p.color}">
+        <div class="product-badge">${p.badge}</div>
+        <div class="product-icon">${p.icon}</div>
+        <div class="product-name-big">${p.short}</div>
+        <div class="product-overlay">
+          <button class="add-cart-btn" onclick="event.stopPropagation();addToCart(${p.id})">+ Add to Cart</button>
+        </div>
+      </div>
+      <div class="product-info">
+        <div class="product-name">${p.name}</div>
+        <div class="product-desc">${p.description.slice(0, 80)}…</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.2rem">
+          <div class="product-price">₹${p.price.toLocaleString('en-IN')}</div>
+          <div class="product-rating">★★★★★ <span style="color:var(--muted);font-size:0.68rem">(${p.reviews_count.toLocaleString('en-IN')})</span></div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// SKIN QUIZ
+// ════════════════════════════════════════════════════════════════════════════
+
+let quizAnswerValues = {}; // { skin_type, acne, sensitivity, concern }
+let currentStep = 0;
+
+function buildQuiz() {
+  const steps = QUIZ_DATA.questions;
+  document.getElementById('stepIndicator').innerHTML =
+    steps.map((_, i) => `<div class="step-dot ${i === 0 ? 'active' : ''}" id="dot${i}"></div>`).join('');
+
+  document.getElementById('quizSteps').innerHTML = steps.map((step, i) => `
+    <div class="form-step ${i === 0 ? 'active' : ''}" id="step${i}">
+      <h3>${step.question}</h3>
+      <p>${step.hint}</p>
+      <div class="options-grid">
+        ${step.options.map((o, j) => `
+          <button class="option-btn" onclick="selectOption(${i}, ${j}, '${o.value}', '${step.id}')">
+            ${o.icon} ${o.label}
+          </button>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectOption(stepIdx, optIdx, value, questionId) {
+  quizAnswerValues[questionId] = value;
+  document.querySelectorAll(`#step${stepIdx} .option-btn`).forEach((b, i) => {
+    b.classList.toggle('selected', i === optIdx);
+  });
+  setTimeout(() => {
+    if (stepIdx < QUIZ_DATA.questions.length - 1) {
+      showStep(stepIdx + 1);
+    } else {
+      runLocalAnalysis();
+    }
+  }, 380);
+}
+
+function showStep(n) {
+  currentStep = n;
+  document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+  document.getElementById(`step${n}`).classList.add('active');
+  document.querySelectorAll('.step-dot').forEach((d, i) => d.classList.toggle('active', i === n));
+}
+
+async function runLocalAnalysis() {
+  document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.step-dot').forEach(d => d.classList.remove('active'));
+  document.getElementById('aiLoading').classList.add('show');
+  document.getElementById('resultBox').classList.remove('show');
+
+  // Try Anthropic API first for a richer, conversational analysis
+  const { skin_type = 'normal', acne = 'rarely', sensitivity = 'mildly', concern = 'glow' } = quizAnswerValues;
+
+  const skinLabel = { dry:'Dry', oily:'Oily', combination:'Combination', normal:'Normal' }[skin_type] || 'Normal';
+  const acneLabel = { frequently:'Frequently', sometimes:'Sometimes', rarely:'Rarely', never:'Never' }[acne] || 'Rarely';
+  const sensLabel = { very:'Very Sensitive', mildly:'Mildly Sensitive', not:'Not Sensitive' }[sensitivity] || 'Mildly Sensitive';
+  const concernLabel = { glow:'Dullness & Glow', hydration:'Hydration', 'sun-protection':'Sun Protection', 'lip-care':'Lip Care' }[concern] || 'Dullness & Glow';
+
+  const prompt = `You are a professional skincare consultant for Orlumi, a premium Indian skincare brand. A customer completed a skin quiz:
+- Skin Type: ${skinLabel}
+- Acne/Breakouts: ${acneLabel}
+- Sensitivity: ${sensLabel}
+- Main Concern: ${concernLabel}
+
+Our products:
+1. Radiance Vitamin C Serum (₹599) – Brightens, reduces dullness, 15% ascorbic acid
+2. HydroGlow Gel Moisturizer (₹499) – Deep hydration, plumping, 48-hour moisture
+3. Daily Shield Sunscreen SPF 50 (₹399) – UV protection, lightweight, non-greasy
+4. Nourish Lip Balm (₹199) – Long-lasting moisture, Shea Butter & Vitamin E
+
+Respond ONLY with valid JSON (no markdown, no extra text):
+{
+  "profile": "2-3 word skin profile name",
+  "description": "2-3 personalized sentences explaining what their skin needs",
+  "recommendations": ["product name 1", "product name 2"],
+  "morning_routine": ["step 1", "step 2", "step 3"],
+  "night_routine": ["step 1", "step 2"],
+  "tip": "One specific personalized skincare tip (1-2 sentences)"
+}`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await resp.json();
+    const text = (data.content || []).map(c => c.text || '').join('');
+    const clean = text.replace(/```json|```/g, '').trim();
+    const result = JSON.parse(clean);
+    showAIResult(result);
+  } catch (_) {
+    // Fallback: use local recommendation engine (mirrors routes/analyze.js)
+    const result = buildRecommendation({ skin_type, acne, sensitivity, concern });
+    showLocalResult(result);
+  }
+}
+
+function showAIResult(result) {
+  document.getElementById('aiLoading').classList.remove('show');
+  document.getElementById('resultTitle').textContent = 'Your Profile: ' + result.profile;
+  document.getElementById('resultDesc').textContent = result.description;
+  document.getElementById('resultProducts').innerHTML = result.recommendations.map(r =>
+    `<div class="result-product"><span>→</span> ${r}</div>`
+  ).join('');
+  const morHTML = result.morning_routine.map((s, i) =>
+    `<div class="routine-step"><div class="routine-step-num">${i + 1}</div><div>${s}</div></div>`
+  ).join('');
+  const nigHTML = result.night_routine.map((s, i) =>
+    `<div class="routine-step"><div class="routine-step-num">${i + 1}</div><div>${s}</div></div>`
+  ).join('');
+  document.getElementById('resultRoutine').innerHTML =
+    `<h5>☀️ Morning Routine</h5>${morHTML}<h5 style="margin-top:0.9rem">🌙 Night Routine</h5>${nigHTML}`;
+  document.getElementById('resultTip').textContent = '💡 ' + result.tip;
+  document.getElementById('resultBox').classList.add('show');
+}
+
+function showLocalResult(result) {
+  document.getElementById('aiLoading').classList.remove('show');
+  document.getElementById('resultTitle').textContent = 'Your Profile: ' + result.profile;
+  document.getElementById('resultDesc').textContent = result.description;
+  document.getElementById('resultProducts').innerHTML = result.recommended_products.map(p =>
+    `<div class="result-product"><span>→</span> ${p.icon} ${p.name} — ₹${p.price}</div>`
+  ).join('');
+  const morHTML = result.morning_routine.map((s, i) =>
+    `<div class="routine-step"><div class="routine-step-num">${i + 1}</div><div>${s}</div></div>`
+  ).join('');
+  const nigHTML = result.night_routine.map((s, i) =>
+    `<div class="routine-step"><div class="routine-step-num">${i + 1}</div><div>${s}</div></div>`
+  ).join('');
+  document.getElementById('resultRoutine').innerHTML =
+    `<h5>☀️ Morning Routine</h5>${morHTML}<h5 style="margin-top:0.9rem">🌙 Night Routine</h5>${nigHTML}`;
+  document.getElementById('resultTip').textContent = '💡 ' + result.tip;
+  document.getElementById('resultBox').classList.add('show');
+}
+
+function resetQuiz() {
+  quizAnswerValues = {}; currentStep = 0;
+  document.getElementById('resultBox').classList.remove('show');
+  document.getElementById('aiLoading').classList.remove('show');
+  buildQuiz();
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// CONTACT FORM  (mirrors routes/contact.js)
+// ════════════════════════════════════════════════════════════════════════════
+
+async function submitContact(e) {
+  e.preventDefault();
+  const btn = document.getElementById('contactSubmitBtn');
+  const name    = document.getElementById('cName').value.trim();
+  const email   = document.getElementById('cEmail').value.trim();
+  const subject = document.getElementById('cSubject').value;
+  const message = document.getElementById('cMessage').value.trim();
+
+  document.getElementById('formSuccess').style.display = 'none';
+  document.getElementById('formError').style.display = 'none';
+
+  // Validation (mirrors contact route)
+  const errors = [];
+  if (!name) errors.push('name is required');
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.push('valid email is required');
+  if (!message || message.length < 10) errors.push('message must be at least 10 characters');
+  if (errors.length) {
+    document.getElementById('formError').textContent = '⚠️ ' + errors.join('; ');
+    document.getElementById('formError').style.display = 'block';
+    return;
+  }
+
+  btn.textContent = 'Sending…'; btn.disabled = true;
+
+  await new Promise(r => setTimeout(r, 1100));
+
+  // Store submission in memory
+  contactSubmissions.push({
+    id: contactSubmissions.length + 1,
+    name, email: email.toLowerCase(), subject, message,
+    created_at: new Date().toISOString(), status: 'received'
+  });
+
+  document.getElementById('formSuccess').style.display = 'block';
+  document.getElementById('contactForm').reset();
+  btn.textContent = 'Message Sent ✓';
+  showToast("Message sent! We'll reply within 24 hours.");
+  setTimeout(() => {
+    btn.textContent = 'Send Message →'; btn.disabled = false;
+    document.getElementById('formSuccess').style.display = 'none';
+  }, 6000);
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// UTILITIES
+// ════════════════════════════════════════════════════════════════════════════
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function smoothScroll(id) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// SCROLL & REVEAL
+// ════════════════════════════════════════════════════════════════════════════
+
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 80);
+  document.querySelectorAll('.reveal').forEach(el => {
+    if (el.getBoundingClientRect().top < window.innerHeight - 70)
+      el.classList.add('visible');
+  });
+}, { passive: true });
+
+// ════════════════════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════════════════════
+
+window.addEventListener('load', () => {
+  setTimeout(() => document.getElementById('loader').classList.add('hidden'), 1300);
+  renderProducts();
+  buildQuiz();
+  renderCart();
+  // Trigger reveals for above-the-fold elements
+  setTimeout(() => {
+    document.querySelectorAll('.reveal').forEach(el => {
+      if (el.getBoundingClientRect().top < window.innerHeight)
+        el.classList.add('visible');
+    });
+  }, 1500);
+});
+</script>
+</body>
+</html>
